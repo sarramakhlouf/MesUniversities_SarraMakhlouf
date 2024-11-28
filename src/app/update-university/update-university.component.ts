@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UniversityService } from '../services/university.service';
 import { University } from '../model/university.model';
 import { Domaine } from '../model/Domaine.model';
- // Typiquement, tout en minuscule pour le chemin
 
 @Component({
   selector: 'app-update-university',
@@ -11,46 +10,72 @@ import { Domaine } from '../model/Domaine.model';
   styles: []
 })
 export class UpdateUniversityComponent implements OnInit {
-  currentUniversity: University | undefined;  // Ajouter le type 'undefined' pour gérer les valeurs non trouvées
-  domaines!: Domaine[];
-  updatedDomId!: number;
+  currentUniversity: University | undefined;
+  domaines: Domaine[] = [];
+  updatedDomId: number | undefined;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private universityService: UniversityService
-  ) { }
+  ) {}
 
-  ngOnInit() {
-    // Récupérer l'ID de l'université à partir des paramètres de route
-    const universityId = Number(this.activatedRoute.snapshot.params['id']); // Utilisation de 'Number()' pour plus de clarté
-    this.domaines = this.universityService.listeDomaines();
-    // Consulter l'université actuelle
-    const university = this.universityService.consulterUniversity(universityId);
-    // Si l'université existe, initialiser la currentUniversity
-    if (university) {
-      this.currentUniversity = university;
-      // Vérifier si le domaine de l'université est défini avant d'accéder à ses propriétés
-      if (this.currentUniversity.domaine) {
-        this.updatedDomId = this.currentUniversity.domaine.idDom;
-      }
-    } else {
-      console.error("L'université avec l'ID donné n'a pas été trouvée.");
+  ngOnInit(): void {
+    const universityId = Number(this.activatedRoute.snapshot.params['id']);
+
+    if (isNaN(universityId)) {
+      console.error("L'ID fourni dans l'URL n'est pas valide.");
+      this.router.navigate(['universities']);
+      return;
     }
+
+    // Charger les domaines
+    this.universityService.listeDomaines().subscribe({
+      next: (doms) => {
+        this.domaines = doms._embedded.domaines;
+      },
+      error: (err) => {
+        console.error("Erreur lors du chargement des domaines :", err);
+      },
+    });
+
+    // Charger l'université
+    this.universityService.consulterUniversity(universityId).subscribe({
+      next: (uni) => {
+        this.currentUniversity = uni;
+        this.updatedDomId = this.currentUniversity.domaine?.idDom;
+      },
+      error: (err) => {
+        console.error("Erreur lors du chargement de l'université :", err);
+        this.router.navigate(['universities']);
+      },
+    });
   }
 
-  updateUniversity() {
-    if (this.currentUniversity && this.updatedDomId) {
-      // Vérifier si le domaine existe avant d'appliquer la mise à jour
-      const domaine = this.universityService.consulterDomaines(this.updatedDomId);
-      if (domaine) {
-        this.currentUniversity.domaine = domaine;
-      }
-      // Mettre à jour l'université si elle existe
-      this.universityService.updateUniversity(this.currentUniversity);
-      this.router.navigate(['universities']);
+  updateUniversity(): void {
+    if (!this.currentUniversity || !this.updatedDomId) {
+      console.error("Les données nécessaires ne sont pas disponibles.");
+      return;
     }
+
+    // Assigner le domaine mis à jour à l'université
+    const selectedDomaine = this.domaines.find((dom) => dom.idDom === this.updatedDomId);
+    if (selectedDomaine) {
+      this.currentUniversity.domaine = selectedDomaine;
+    } else {
+      console.error("Le domaine sélectionné est introuvable.");
+      return;
+    }
+
+    // Appeler le service pour mettre à jour l'université
+    this.universityService.updateUniversity(this.currentUniversity).subscribe({
+      next: () => {
+        console.log("Université mise à jour avec succès.");
+        this.router.navigate(['universities']);
+      },
+      error: (err) => {
+        console.error("Erreur lors de la mise à jour de l'université :", err);
+      },
+    });
   }
 }
-
-

@@ -34,11 +34,11 @@
             </div>
             <div class="col-sm-2 col-md-2 col-lg-2">
                 <label>Nombre des étudiants</label>
-                <input type="number" [(ngModel)]="newUni.nombreEtudiants" name="nombreEtudiants" class="form-control" #nombreEtudiants="ngModel" min=1000 max=10000 required>
-                <div *ngIf="nombreEtudiants.invalid && nombreEtudiants.touched">
-                    <small class="text-danger" *ngIf="nombreEtudiants.errors?.['max']">le nombre des étudiants est trop élevé.</small>
-                    <small class="text-danger" *ngIf="nombreEtudiants.errors?.['min']">le nombre des étudiants est très faible.</small>
-                    <small class="text-danger" *ngIf="nombreEtudiants.errors?.['required']">Le nombre des étudiants est requis.</small>
+                <input type="number" [(ngModel)]="newUni.numberEtudiants" name="numberEtudiants" class="form-control" #numberEtudiants="ngModel" min=1000 max=10000 required>
+                <div *ngIf="numberEtudiants.invalid && numberEtudiants.touched">
+                    <small class="text-danger" *ngIf="numberEtudiants.errors?.['max']">le nombre des étudiants est trop élevé.</small>
+                    <small class="text-danger" *ngIf="numberEtudiants.errors?.['min']">le nombre des étudiants est très faible.</small>
+                    <small class="text-danger" *ngIf="numberEtudiants.errors?.['required']">Le nombre des étudiants est requis.</small>
                 </div>
             </div>
             <div class="col-sm-4 col-md-4 col-lg-4">

@@ -1,76 +1,91 @@
 import { Injectable } from '@angular/core';
 import { University } from '../model/university.model';
-import { Domaine } from '../model/Domaine.model'; // Vérifiez le nom de fichier ici
+import { Domaine } from '../model/Domaine.model';
+import { DomaineWrapper } from '../model/DomaineWrapped.model';
+import { catchError } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class UniversityService {
+  universities ! : University[];
+  domaines!:Domaine[];
+  universityRecherche!: University[];
 
-  universities: University[];
-  domaines: Domaine[];
-  universitiesRecherche: University[] = [];
+  private apiURL: string = 'http://localhost:8090/universities/api';
+  private apiURLDom: string = 'http://localhost:8090/universities/dom';
 
-  constructor() {
-    this.domaines = [
-      { idDom: 1, nomDom: "Informatique" },
-      { idDom: 2, nomDom: "Lettres et langues" },
-      { idDom: 3, nomDom: "Santé" },
-      { idDom: 4, nomDom: "Economie et gestion" },
-    ];
-    this.universities = [
-      { idUni: 1, nomUni: "Iset", adresseUni: "Nabeul", dateCreation: new Date("01/12/2011"), nombreEtudiants: 2000, domaine: { idDom: 1, nomDom: "Informatique" } , email: "isetnabeul@gmail.com"},
-      { idUni: 2, nomUni: "Ihec", adresseUni: "Carthage", dateCreation: new Date("12/08/2010"), nombreEtudiants: 1000, domaine: { idDom: 4, nomDom: "Economie et gestion" }, email: "ihecCarthage@gmail.com"},
-      { idUni: 3, nomUni: "Université centrale", adresseUni: "Tunis", dateCreation: new Date("02/10/2020"), nombreEtudiants: 5000, domaine: { idDom: 3, nomDom: "Santé" }, email: "UniversiteCentrale@gmail.com" },
-      { idUni: 4, nomUni: "Isam", adresseUni: "Manouba", dateCreation: new Date("12/05/2020"), nombreEtudiants: 4500, domaine: { idDom: 1, nomDom: "informatique" }, email: "isam@gmail.com" }
-    ];
+  constructor(private http: HttpClient) {}
+
+  listeUniversities(): Observable<University[]> {
+    return this.http.get<University[]>(this.apiURL).pipe(
+      catchError((err) => {
+        console.error('Erreur lors de la récupération des universités', err);
+        return of([]);
+      })
+    ); 
   }
 
-  listeUniversities(): University[] {
-    return this.universities;
+  ajouterUniversity(uni: University): Observable<University> {
+    return this.http.post<University>(this.apiURL, uni, httpOptions);
   }
 
-  ajouterUniversity(uni: University): void {
-    this.universities.push(uni);
+  supprimerUniversity(id: number){
+    const url = `${this.apiURL}/${id}`;
+    return this.http.delete(url, httpOptions);
   }
 
-  supprimerUniversity(uni: University): void {
-    const index = this.universities.indexOf(uni);
-    if (index !== -1) {
-      this.universities.splice(index, 1);
-    }
+  consulterUniversity(id: number): Observable<University> {
+    const url = `${this.apiURL}/${id}`;
+    return this.http.get<University>(url);
   }
 
-  consulterUniversity(id: number): University | undefined {
-    return this.universities.find(p => p.idUni === id);
+  updateUniversity(uni: University): Observable<University> {
+    const url = `${this.apiURL}/${uni.idUni}`;
+    return this.http.put<University>(url, uni, httpOptions);
   }
 
-  updateUniversity(uni: University): void {
-    const index = this.universities.findIndex(u => u.idUni === uni.idUni);
-    if (index !== -1) {
-      this.universities[index] = uni; // Mettre à jour directement
-    }
-    this.trierUniversities();
+  listeDomaines(): Observable<DomaineWrapper> {
+    return this.http.get<DomaineWrapper>(this.apiURLDom);
   }
 
-  trierUniversities(): void {
-    this.universities.sort((n1, n2) => n1.idUni - n2.idUni);
+  ajouterDomaine(domaine: Domaine): Observable<Domaine> {
+    return this.http.post<Domaine>(this.apiURLDom, domaine);
   }
 
-  listeDomaines(): Domaine[] {
-    return this.domaines;
+  consulterDomaine(id :number):Domaine{
+    return this.domaines.find(dom => dom.idDom == id)!;
   }
 
-  consulterDomaines(id: number): Domaine | undefined {
-    return this.domaines.find(dom => dom.idDom == id);
+  rechercherParDomaine(idDom: number): Observable<University[]> {
+    const url = `${this.apiURL}/search?domaineId=${idDom}`;
+    return this.http.get<University[]>(url);
   }
 
-  rechercherParDomaine(idDom: number): University[] {
-    return this.universities.filter(uni => uni.domaine.idDom == idDom);
+  rechercherParNom(nom: string): Observable<University[]> {
+    const url = `${this.apiURL}/formsByName/${nom}`;
+    return this.http.get<University[]>(url);
+  }
+
+  updateDomaine(dom:Domaine): Observable<void> {
+    const url = `${this.apiURL}/${dom.idDom}`; // Assurez-vous que `id` est une propriété existante
+    return this.http.put<void>(url, dom);
   }
-  ajouterDomaine(dom: Domaine): Domaine {
-    const id = this.domaines.length + 1
-    dom.idDom = id;
-    this.domaines.push({ ...dom }); // ... pour faire un copie de objet dom
-    return dom;
+  trierUidUni() {
+    this.universities = this.universities.sort((n1, n2) => {
+      if (n1.idUni! > n2.idUni!) {
+        return 1;
+      }
+      if (n1.idUni! < n2.idUni!) {
+        return -1;
+      }
+      return 0;
+    });
   }
 }

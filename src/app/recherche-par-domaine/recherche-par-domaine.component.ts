@@ -13,18 +13,48 @@ export class RechercheParDomaineComponent implements OnInit {
   IdDomaine!: number;
   domaines!: Domaine[];
 
-  constructor(private universityService: UniversityService,
-    public authService: AuthService) {}
+  constructor(private universityService: UniversityService,public authService: AuthService) {}
 
   ngOnInit(): void {
-    this.domaines=this.universityService.listeDomaines();
-    this.universities = [] ;
-  } 
-  onChange() {
-    this.universities =
-      this.universityService.rechercherParDomaine(this.IdDomaine);
+    this.universityService.listeDomaines().subscribe((dom) => {
+      this.domaines =dom._embedded.domaines;
+      console.log(dom);
+    });
+    /*// Charger les domaines
+    this.universityService.listeDomaines().subscribe({
+      next: (data) => {
+        this.domaines = data._embedded.domaines; // Adapter selon la structure de votre API
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des domaines :', err);
+      },
+    });
+    this.universities = [];*/
   }
 
+  onChange(){
+    this.universityService.rechercherParDomaine(this.IdDomaine).subscribe((uni) => {
+      this.universities =uni;
+    });
+    /*this.universityService.rechercherParDomaine(this.IdDomaine).subscribe({
+      next: (data) => {
+        this.universities = data;
+      },
+      error: (err) => {
+        console.error('Erreur lors de la recherche par domaine :', err);
+      },
+    });*/
+  }
+  supprimerUniversity(uni: University) {
+    let conf = confirm('Etes-vous sûr ?');
+    if (conf) {
+      this.universityService.supprimerUniversity(uni.idUni!).subscribe(() => {
+        // Met à jour la liste des chansons après la suppression
+        this.universities = this.universities.filter(
+          (c) => c.idUni !== uni.idUni
+        );
+        console.log('université supprimée');
+      });
+    }
+  }
 }
-
-

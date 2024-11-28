@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { University } from '../model/university.model'; 
 import { UniversityService } from '../services/university.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Domaine } from '../model/Domaine.model';
 
 @Component({
@@ -18,12 +18,15 @@ export class AddUniversityComponent implements OnInit {
   constructor(
     private universityService: UniversityService, // Convention de nommage : camelCase
     private router: Router,
-    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // Charger les domaines depuis le service
-    this.domaines = this.universityService.listeDomaines();
+    this.universityService.listeDomaines().subscribe(doms => {
+      console.log(doms);
+      this.domaines = doms._embedded.domaines; 
+    });
+    /*// Charger les domaines depuis le service
+    this.universityService.listeDomaines();
     // Vérifier si l'ID de l'université est fourni dans les paramètres d'URL (mode édition)
     const id = this.activatedRoute.snapshot.params['id'];
     if (id) {
@@ -38,10 +41,17 @@ export class AddUniversityComponent implements OnInit {
         console.error('Université non trouvée pour l\'ID:', id);
         // Vous pourriez rediriger vers une page d'erreur ou effectuer une autre action
       }
-    }
+    }*/ 
   }
-  
-  addUniversity(): void {
+  addUniversity() {
+    this.newUni.domaine = this.domaines.find(dom => dom.idDom == this.newIdDom)!;
+    this.universityService.ajouterUniversity(this.newUni)
+      .subscribe(uni => {
+        console.log(uni);
+        this.router.navigate(['universities']);
+      });  
+  }
+  /*addUniversity(): void {
     // Récupérer l'objet du domaine sélectionné à partir de l'ID
     const selectedDomaine = this.universityService.consulterDomaines(this.newIdDom);
     console.log(this.newIdDom);
@@ -57,6 +67,5 @@ export class AddUniversityComponent implements OnInit {
       console.error('Domaine non trouvé pour l\'ID:', this.newIdDom);
       // Vous pourriez afficher un message d'erreur ou empêcher l'ajout si nécessaire
     }
-  }
-  
+  }*/
 }

@@ -2,7 +2,7 @@
     <div>
         <h2>Modifier les données d'une université :</h2>
     </div>
-    <form #universityForm="ngForm">
+    <form #universityForm="ngForm" (ngSubmit)="updateUniversity()">
         <div class="row">
             <!-- ID Université (caché) -->
             <div class="col-sm-2 col-md-2 col-lg-2">
@@ -27,7 +27,7 @@
             <!-- Nombre d'Étudiants -->
             <div class="col-sm-2 col-md-2 col-lg-2">
                 <label>Nombre des étudiants</label>
-                <input type="number" [(ngModel)]= "currentUniversity!.nombreEtudiants" name="nombreEtudiants" class="form-control" min=1000 max=10000 #nombreEtudiants="ngModel" required>
+                <input type="number" [(ngModel)]= "currentUniversity!.numberEtudiants" name="numberEtudiants" class="form-control" min=1000 max=10000 #numberEtudiants="ngModel" required>
             </div>
             <!-- Domaines -->
             <div class="col-sm-4 col-md-4 col-lg-4">
@@ -50,7 +50,7 @@
         </div>
         <!-- Bouton de soumission -->
         <div class="mt-2">
-            <button type="submit" (click)="updateUniversity()" [disabled]= "universityForm.invalid" class="btn btn-success">
+            <button type="submit"  [disabled]= "universityForm.invalid" class="btn btn-success">
                 Modifier
             </button>
         </div>

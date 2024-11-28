@@ -16,14 +16,23 @@ export class UniversitiesComponent implements OnInit // Correction de l'impléme
     public authService: AuthService) { }
 
   ngOnInit(): void {
-    this.universities = this.UniversityService.listeUniversities(); // Accès aux données lors de l'initialisation
+    this.chargerUniversities(); 
   }
 
-  supprimerUniversity(uni: University): void { // Correction du type
-    let conf = confirm("Etes-vous sûr ?");
-    if (conf) {
-      this.UniversityService.supprimerUniversity(uni);
-    }
+  chargerUniversities(){ 
+    this.UniversityService.listeUniversities().subscribe(prods => { 
+      console.log(prods); 
+      this.universities = prods; 
+    });  
+  }
+
+  supprimerUniversity(uni: University){ // Correction du type // Correction du type
+    let conf = confirm("Etes-vous sûr ?"); 
+    if (conf) 
+    this.UniversityService.supprimerUniversity(uni.idUni).subscribe(() => { 
+      console.log("université supprimée"); 
+      this.chargerUniversities(); 
+    });
   }
 }
 
