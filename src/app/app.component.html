@@ -8,7 +8,7 @@
         <div class="collapse navbar-collapse" id="navbarScroll">
             <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" routerLink="/universities">Home</a>
+                    <a class="nav-link active" aria-current="page" routerLink="/login">Home</a>
                 </li>
                 <li> <a class="nav-link">{{authService.loggedUser}}</a></li>
                 <li class="nav-item dropdown">
@@ -17,10 +17,10 @@
                     <ul class="dropdown-menu">
                         <li><a *ngIf="authService.isAdmin()" class="dropdown-item"
                                 routerLink="add-university">Ajouter</a></li>
-                        <li><a class="dropdown-item" href="#">Lister</a></li>
-                        <li><a class="dropdown-item" routerLink="/rechercheParDomaine">Recherche Par Domaine</a></li>
+                        <li><a class="dropdown-item"  routerLink="/universities">Lister</a></li>
+                        <!--<li><a class="dropdown-item" routerLink="/rechercheParDomaine">Recherche Par Domaine</a></li>-->
                         <li><a class="dropdown-item" routerLink="/rechercheParNom">Recherche Par Nom</a></li>
-                        <li><a class="dropdown-item" routerLink="/listerDomaines" >Gestion des domaines</a></li>
+                        <li><a *ngIf="authService.isAdmin()" class="dropdown-item" routerLink="/listerDomaines" >Gestion des domaines</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown ms-auto">

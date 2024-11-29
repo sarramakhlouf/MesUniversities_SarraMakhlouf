@@ -64,7 +64,7 @@ export class UniversityService {
   }
 
   rechercherParDomaine(idDom: number): Observable<University[]> {
-    const url = `${this.apiURL}/search?domaineId=${idDom}`;
+    const url = `${this.apiURLDom}/search?domaineId=${idDom}`;
     return this.http.get<University[]>(url);
   }
 

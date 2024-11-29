@@ -42,6 +42,7 @@ export class UpdateUniversityComponent implements OnInit {
     // Charger l'université
     this.universityService.consulterUniversity(universityId).subscribe({
       next: (uni) => {
+        console.log(uni);
         this.currentUniversity = uni;
         this.updatedDomId = this.currentUniversity.domaine?.idDom;
       },

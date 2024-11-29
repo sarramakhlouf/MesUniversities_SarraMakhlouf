@@ -9,7 +9,7 @@
     <form class="form-inline">
         <div class="form-group mx-sm-3 mb-2 mt-2 ">
             <label>Nom Université en tapant</label>
-            <input #nom [(ngModel)]="searchTerm" name="searchTerm" class="form-control">
+            <input #nom #searchTerm name="searchTerm" class="form-control" (keyup)="onKeyUp(searchTerm.value)">
         </div>
     </form>
         
@@ -25,7 +25,7 @@
                     <th>Nombre des étudiants</th> 
                     <th>Domaines</th>
                 </tr>
-                <tbody *ngFor="let university of universities | searchFilter: searchTerm">
+                <tbody *ngFor="let university of universities">
                     <tr>
                         <td>{{university.idUni}}</td>
                         <td>{{university.nomUni}}</td>
@@ -34,7 +34,7 @@
                         <td>{{university.numberEtudiants}}</td>
                         <td>{{university.domaine.nomDom}}</td>
                         <!--<td><a class="btn btn-danger" (click)="supprimerUniversity(university)">Supprimer</a></td>-->
-                        <td><a *ngIf="authService.isloggedIn" class="btn btn-success" [routerLink]="['/updateUniversity',university.idUni]">Modifier</a></td>
+                        <td><a *ngIf="authService.isAdmin()" class="btn btn-success" [routerLink]="['/updateUniversity',university.idUni]">Modifier</a></td>
                     </tr>
                 </tbody>
             </table>

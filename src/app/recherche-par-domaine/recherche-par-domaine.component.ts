@@ -33,7 +33,9 @@ export class RechercheParDomaineComponent implements OnInit {
   }
 
   onChange(){
-    this.universityService.rechercherParDomaine(this.IdDomaine).subscribe((uni) => {
+    const domaineId = Number(this.IdDomaine);
+    console.log(domaineId);
+    this.universityService.rechercherParDomaine(domaineId).subscribe((uni) => {
       this.universities =uni;
     });
     /*this.universityService.rechercherParDomaine(this.IdDomaine).subscribe({

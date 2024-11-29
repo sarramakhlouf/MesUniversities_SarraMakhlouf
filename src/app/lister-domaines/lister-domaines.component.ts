@@ -58,8 +58,8 @@ export class ListerDomainesComponent implements OnInit {
   }
 
   updateDom(dom: Domaine){
-    /*this.updatedDom = { ...dom }; // Créer une copie pour éviter de modifier l'original directement
-    this.ajout = false;*/
+    this.updatedDom = { ...dom }; // Créer une copie pour éviter de modifier l'original directement
+    this.ajout = false;
     console.log("dom updated event", dom); // Journal pour déboguer
     this.universityService.updateDomaine(dom) // Appel API pour mettre à jour la catégorie
       .subscribe(

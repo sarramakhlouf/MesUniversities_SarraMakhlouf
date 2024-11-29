@@ -7,7 +7,7 @@
             <!-- ID Université (caché) -->
             <div class="col-sm-2 col-md-2 col-lg-2">
                 <label>ID université</label>
-                <input type="text" [(ngModel)]= "currentUniversity!.idUni" name="idUni" class="form-control">
+                <input readonly type="text" [(ngModel)]= "currentUniversity!.idUni" name="idUni" class="form-control">
             </div>
             <!-- Nom Université -->
             <div class="col-sm-4 col-md-4 col-lg-4">
@@ -22,7 +22,7 @@
             <!-- Date de Création -->
             <div class="col-sm-4 col-md-4 col-lg-4">
                 <label>Date création</label>
-                <input type="date" [(ngModel)]= "currentUniversity!.dateCreation" name="dateCreation" class="form-control" #dateCreation="ngModel" required>
+                <input type="datetime" [(ngModel)]= "currentUniversity!.dateCreation" name="dateCreation" class="form-control" #dateCreation="ngModel" required>
             </div>
             <!-- Nombre d'Étudiants -->
             <div class="col-sm-2 col-md-2 col-lg-2">
@@ -38,7 +38,7 @@
             </div>
             <div class="col-sm-4 col-md-4 col-lg-4">
                 <label>Email</label>
-                <input type="email" [(ngModel)]= "currentUniversity!.email" name="email" class="form-control" required email minlength="5" #email="ngModel" pattern="[a-z0-9._%+-]+@gmail.com">
+                <input type="text" [(ngModel)]= "currentUniversity!.email" name="email" class="form-control" required email minlength="5" #email="ngModel" pattern="[a-z0-9._%+-]+@gmail.com">
                 <!-- Message d'erreur si l'email n'est pas valide -->
                 <div *ngIf="email.invalid && email.touched">
                     <small class="text-danger" *ngIf="email.errors?.['required']">L'email est requis.</small>

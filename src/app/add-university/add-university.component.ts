@@ -45,27 +45,11 @@ export class AddUniversityComponent implements OnInit {
   }
   addUniversity() {
     this.newUni.domaine = this.domaines.find(dom => dom.idDom == this.newIdDom)!;
+    console.log(this.newUni);
     this.universityService.ajouterUniversity(this.newUni)
       .subscribe(uni => {
         console.log(uni);
         this.router.navigate(['universities']);
       });  
   }
-  /*addUniversity(): void {
-    // Récupérer l'objet du domaine sélectionné à partir de l'ID
-    const selectedDomaine = this.universityService.consulterDomaines(this.newIdDom);
-    console.log(this.newIdDom);
-    if (selectedDomaine) { 
-      // Si le domaine existe, l'assigner à l'université
-      this.newUni.domaine = selectedDomaine;
-      // Ajouter ou mettre à jour l'université via le service
-      this.universityService.ajouterUniversity(this.newUni);
-      // Naviguer vers la liste des universités après l'ajout ou la mise à jour
-      this.router.navigate(['universities']);
-    } else {
-      // Gérer le cas où aucun domaine n'est trouvé (facultatif)
-      console.error('Domaine non trouvé pour l\'ID:', this.newIdDom);
-      // Vous pourriez afficher un message d'erreur ou empêcher l'ajout si nécessaire
-    }
-  }*/
 }
